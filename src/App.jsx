@@ -1603,7 +1603,7 @@ const [checkoutPlan, setCheckoutPlan] = useState(null);
             setAnswer("Searching latest information...");
 
             try {
-              const res = await fetch(`${import.meta.env.VITE_API_URL}/api/ask`, {
+              const res = await fetch(`https://examverse-ai.onrender.com/api/ask`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json"
