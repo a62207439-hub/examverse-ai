@@ -56,9 +56,6 @@ ${question}
 
 Give an accurate, clear and useful answer for a student.
 Use simple language and structured points when appropriate.`,
-      config: {
-        tools: [{ googleSearch: {} }]
-      }
     });
 
     const answer = response.text;
