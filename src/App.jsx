@@ -1597,34 +1597,50 @@ const [checkoutPlan, setCheckoutPlan] = useState(null);
             placeholder={`Ask about ${selectedChapter}...`}
           />
 
-          <button onClick={async () => {
-            if (!question.trim()) return;
+          <button
+            type="button"
+            onClick={async () => {
+              const q = question.trim();
 
-            setAnswer("Searching latest information...");
+              if (!q) {
+                setAnswer("Please enter a question first.");
+                return;
+              }
 
-            try {
-              const res = await fetch(`https://examverse-ai.onrender.com/api/ask`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                  exam: selectedExam.name,
-                  subject: selectedSubject,
-                  chapter: selectedChapter,
-                  question
-                })
-              });
+              setAnswer("Thinking...");
 
-              const data = await res.json();
-              setAnswer(data.answer || data.error);
-            } catch (error) {
-              console.error("ExamVerse AI:", error);
-              setAnswer(
-                "AI service is currently unavailable. Please make sure the backend is running and try again."
-              );
-            }
-          }}>
+              try {
+                const res = await fetch(
+                  "https://examverse-ai.onrender.com/api/ask",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                      exam: selectedExam.name,
+                      subject: selectedSubject,
+                      chapter: selectedChapter,
+                      question: q
+                    })
+                  }
+                );
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                  throw new Error(data.error || "AI request failed");
+                }
+
+                setAnswer(data.answer || "No answer received.");
+              } catch (error) {
+                console.error("ExamVerse AI:", error);
+                setAnswer(
+                  "AI service is currently unavailable. Please try again."
+                );
+              }
+            }}
+          >
             Ask
           </button>
         </div>
